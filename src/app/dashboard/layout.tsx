@@ -9,8 +9,10 @@ import {
   TrendingUp,
   TrendingDown,
   LogOut,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function DashboardLayout({
   children,
@@ -19,6 +21,7 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { isAdmin } = useAuth();
 
   const handleLogout = () => {
     document.cookie = "token=; path=/; max-age=0";
@@ -32,6 +35,14 @@ export default function DashboardLayout({
     { href: "/dashboard/pembelian", label: "Pembelian", icon: TrendingDown },
     { href: "/dashboard/penjualan", label: "Penjualan", icon: TrendingUp },
   ];
+
+  if (isAdmin) {
+    navItems.push({
+      href: "/dashboard/users",
+      label: "Manajemen User",
+      icon: Users,
+    });
+  }
 
   return (
     <div className="flex min-h-screen bg-zinc-50">
