@@ -57,7 +57,7 @@ export const transactionService = {
   // --- PEMBELIAN (INBOUND) ---
 
   // Get All Pembelian
-  getPembelian: async () => {
+  getAllPembelian: async () => {
     const response = await apiClient.get<ApiResponse<PembelianResponse[]>>(
       "/pembelian"
     );
