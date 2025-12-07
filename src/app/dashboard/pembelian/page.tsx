@@ -76,6 +76,7 @@ export default function PembelianPage() {
                 <th className="px-6 py-3 font-medium">Tanggal</th>
                 <th className="px-6 py-3 font-medium">Supplier</th>
                 <th className="px-6 py-3 font-medium">Total</th>
+                <th className="px-6 py-3 font-medium">Status</th>
                 <th className="px-6 py-3 font-medium">User</th>
                 <th className="px-6 py-3 font-medium text-right">Aksi</th>
               </tr>
@@ -83,7 +84,7 @@ export default function PembelianPage() {
             <tbody className="divide-y divide-zinc-100">
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-zinc-500">
+                  <td colSpan={7} className="py-8 text-center text-zinc-500">
                     <div className="flex justify-center items-center gap-2">
                       <Loader2 className="h-4 w-4 animate-spin" />
                       Memuat data...
@@ -92,7 +93,7 @@ export default function PembelianPage() {
                 </tr>
               ) : filteredData?.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-zinc-500">
+                  <td colSpan={7} className="py-8 text-center text-zinc-500">
                     Tidak ada data pembelian.
                   </td>
                 </tr>
@@ -110,6 +111,17 @@ export default function PembelianPage() {
                     </td>
                     <td className="px-6 py-3 font-medium text-zinc-900">
                       Rp {item.header.total.toLocaleString("id-ID")}
+                    </td>
+                    <td className="px-6 py-3">
+                      <span
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                          item.header.status === "selesai"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {item.header.status}
+                      </span>
                     </td>
                     <td className="px-6 py-3 text-zinc-600">
                       {item.header.user?.full_name ||
@@ -138,6 +150,7 @@ export default function PembelianPage() {
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
         title="Tambah Pembelian Baru"
+        className="max-w-4xl"
       >
         <PembelianForm
           onSuccess={() => setIsCreateOpen(false)}
@@ -150,6 +163,7 @@ export default function PembelianPage() {
         isOpen={!!selectedPembelian}
         onClose={() => setSelectedPembelian(null)}
         title="Detail Pembelian"
+        className="max-w-3xl"
       >
         {selectedPembelian && (
           <PembelianDetail

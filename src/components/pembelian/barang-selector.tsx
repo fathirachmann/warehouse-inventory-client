@@ -96,14 +96,14 @@ export function BarangSelector({ onSelect, onClose }: BarangSelectorProps) {
             <button
               disabled={page === 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="disabled:opacity-50 hover:text-zinc-900"
+              className="rounded border border-zinc-200 px-3 py-1 disabled:opacity-50 hover:bg-zinc-50 hover:text-zinc-900"
             >
               Prev
             </button>
             <button
               disabled={page >= Math.ceil(data.meta.total / data.meta.limit)}
               onClick={() => setPage((p) => p + 1)}
-              className="disabled:opacity-50 hover:text-zinc-900"
+              className="rounded border border-zinc-200 px-3 py-1 disabled:opacity-50 hover:bg-zinc-50 hover:text-zinc-900"
             >
               Next
             </button>
