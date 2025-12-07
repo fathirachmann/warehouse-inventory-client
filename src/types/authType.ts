@@ -9,18 +9,20 @@ export interface User {
   updated_at?: string;
 }
 
-// Type for login request and response
+export interface UserSimpleResponse {
+  username: string;
+  full_name: string;
+}
+
 export interface LoginRequest {
   email: string;
   password?: string;
 }
 
-// Type for login response
 export interface LoginResponse {
   token: string;
 }
 
-// Type for register request
 export interface RegisterRequest {
   username: string;
   email: string;
@@ -28,7 +30,6 @@ export interface RegisterRequest {
   full_name: string;
 }
 
-// Type for register response
 export interface RegisterResponse {
   username: string;
   email: string;

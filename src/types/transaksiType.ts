@@ -1,34 +1,34 @@
-// Base item detail untuk form input
-export interface TransaksiDetailItem {
+// --- Transaksi Pembelian (models/pembelian.go) ---
+
+import { UserSimpleResponse } from "./authType";
+
+export interface BeliDetailRequest {
   barang_id: number;
   qty: number;
   harga: number;
 }
 
-// ------ Type untuk Pembelian ------
-
-// Type untuk Request Pembelian
-export interface CreatePembelianRequest {
+export interface BeliHeaderRequest {
   supplier: string;
-  details: TransaksiDetailItem[];
+  details: BeliDetailRequest[];
 }
 
-// Type untuk Detail Pembelian
-export interface PembelianDetail {
+export interface BarangPembelianResponse {
+  kode_barang: string;
+  nama_barang: string;
+  satuan: string;
+}
+
+export interface BeliDetailResponse {
   id: number;
   barang_id: number;
   qty: number;
   harga: number;
   subtotal: number;
-  barang: {
-    kode_barang: string;
-    nama_barang: string;
-    satuan: string;
-  };
+  barang: BarangPembelianResponse;
 }
 
-// Type untuk Header Pembelian
-export interface PembelianHeader {
+export interface BeliHeaderResponse {
   id: number;
   no_faktur: string;
   supplier: string;
@@ -36,42 +36,44 @@ export interface PembelianHeader {
   user_id: number;
   status: string;
   created_at: string;
-  user: {
-    username: string;
-    full_name: string;
-  };
+  user: UserSimpleResponse;
 }
 
-// Type untuk Response Pembelian
+// Yang digunakan untuk response GET pembelian
 export interface PembelianResponse {
-  header: PembelianHeader;
-  details: PembelianDetail[];
+  header: BeliHeaderResponse;
+  details: BeliDetailResponse[];
 }
 
-// ------ Type untuk Penjualan ------
+// --- Transaksi Penjualan (models/penjualan.go) ---
 
-// Definisi tipe data untuk request penjualan
-export interface CreatePenjualanRequest {
+export interface JualDetailRequest {
+  barang_id: number;
+  qty: number;
+  harga: number;
+}
+
+export interface JualHeaderRequest {
   customer: string;
-  details: TransaksiDetailItem[];
+  details: JualDetailRequest[];
 }
 
-// Definisi tipe data untuk detail penjualan
-export interface PenjualanDetail {
+export interface BarangPenjualanResponse {
+  kode_barang: string;
+  nama_barang: string;
+  satuan: string;
+}
+
+export interface JualDetailResponse {
   id: number;
   barang_id: number;
   qty: number;
   harga: number;
   subtotal: number;
-  barang: {
-    kode_barang: string;
-    nama_barang: string;
-    satuan: string;
-  };
+  barang: BarangPenjualanResponse;
 }
 
-// Definisi tipe data untuk header penjualan
-export interface PenjualanHeader {
+export interface JualHeaderResponse {
   id: number;
   no_faktur: string;
   customer: string;
@@ -79,14 +81,11 @@ export interface PenjualanHeader {
   user_id: number;
   status: string;
   created_at: string;
-  user: {
-    username: string;
-    full_name: string;
-  };
+  user: UserSimpleResponse;
 }
 
-// Definisi tipe data untuk response penjualan
+// Yang digunakan untuk response GET penjualan
 export interface PenjualanResponse {
-  header: PenjualanHeader;
-  details: PenjualanDetail[];
+  header: JualHeaderResponse;
+  details: JualDetailResponse[];
 }

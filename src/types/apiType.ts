@@ -3,12 +3,10 @@ export interface Meta {
   page: number;
   limit: number;
   total: number;
-  total_page?: number;
 }
 
 // Generic API response structure
 export interface ApiResponse<T> {
-  success?: boolean;
   message?: string;
   data: T;
   meta?: Meta;
@@ -18,5 +16,4 @@ export interface ApiResponse<T> {
 export interface ErrorResponse {
   status?: string;
   message: string | Record<string, string>;
-  error?: string;
 }
