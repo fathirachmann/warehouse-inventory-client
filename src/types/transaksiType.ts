@@ -1,7 +1,5 @@
 // --- Transaksi Pembelian (models/pembelian.go) ---
 
-import { UserSimpleResponse } from "./authType";
-
 export interface BeliDetailRequest {
   barang_id: number;
   qty: number;
@@ -84,7 +82,10 @@ export interface JualHeaderResponse {
   user_id: number;
   status: string;
   created_at: string;
-  user: UserSimpleResponse;
+  user: {
+    username: string;
+    full_name: string;
+  };
 }
 
 // Yang digunakan untuk response GET penjualan
