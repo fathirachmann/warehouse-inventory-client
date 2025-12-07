@@ -22,6 +22,7 @@ export const authService = {
     return response.data;
   },
 
+  // Logout User
   logout: () => {
     return true;
   },
