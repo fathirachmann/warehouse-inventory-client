@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "@/services/authService";
 import { RegisterRequest } from "@/types/authType";
+import { ErrorResponse } from "@/types/apiType";
 import { RegisterForm } from "@/components/auth/register-form";
 import { useAuth } from "@/hooks/useAuth";
 import { Users, ShieldAlert } from "lucide-react";
@@ -26,7 +27,7 @@ export default function UsersPage() {
       setSuccessMessage("Staff berhasil didaftarkan!");
       setErrorMessage(null);
     },
-    onError: (error: any) => {
+    onError: (error: ErrorResponse) => {
       setSuccessMessage(null);
       setErrorMessage(
         typeof error?.message === "string"

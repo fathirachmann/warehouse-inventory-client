@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { authService } from "@/services/authService";
 import { LoginRequest } from "@/types/authType";
+import { ErrorResponse } from "@/types/apiType";
 
 const loginSchema = z.object({
   email: z
@@ -46,7 +47,7 @@ export default function HomePage() {
       document.cookie = `token=${response.token}; path=/; max-age=86400; SameSite=Lax`;
       router.push("/dashboard");
     },
-    onError: (error: any) => {
+    onError: (error: ErrorResponse) => {
       if (error && typeof error.message === "object") {
         setFieldErrors(error.message as Record<string, string>);
         setErrorMessage(null);

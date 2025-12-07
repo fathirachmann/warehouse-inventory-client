@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { transactionService } from "@/services/transactionService";
 import { JualHeaderRequest } from "@/types/transaksiType";
+import { ErrorResponse } from "@/types/apiType";
 import { BarangResponse } from "@/types/barangType";
 import { Modal } from "@/components/ui/modal";
 import { BarangSelector } from "./barang-selector";
@@ -38,8 +39,8 @@ export function PenjualanForm({ onSuccess, onCancel }: PenjualanFormProps) {
       queryClient.invalidateQueries({ queryKey: ["barang"] });
       onSuccess();
     },
-    onError: (err: any) => {
-      setError(err.message || "Gagal membuat transaksi penjualan");
+    onError: (err: ErrorResponse) => {
+      setError((err.message as string) || "Gagal membuat transaksi penjualan");
       setIsConfirmOpen(false);
     },
   });
