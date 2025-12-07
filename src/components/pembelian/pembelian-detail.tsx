@@ -1,4 +1,5 @@
 import { PembelianResponse } from "@/types/transaksiType";
+import { formatDateTime, formatRupiah } from "@/lib/format";
 
 interface PembelianDetailProps {
   data: PembelianResponse;
@@ -19,7 +20,7 @@ export function PembelianDetail({ data, onClose }: PembelianDetailProps) {
         <div>
           <div className="text-zinc-500">Tanggal</div>
           <div className="font-medium text-zinc-900">
-            {new Date(header.created_at).toLocaleString("id-ID")}
+            {formatDateTime(header.created_at)}
           </div>
         </div>
         <div>
@@ -64,10 +65,10 @@ export function PembelianDetail({ data, onClose }: PembelianDetailProps) {
                     {item.qty} {item.barang.satuan}
                   </td>
                   <td className="px-4 py-2 text-right text-zinc-600">
-                    Rp {item.harga.toLocaleString("id-ID")}
+                    {formatRupiah(item.harga)}
                   </td>
                   <td className="px-4 py-2 text-right font-medium text-zinc-900">
-                    Rp {item.subtotal.toLocaleString("id-ID")}
+                    {formatRupiah(item.subtotal)}
                   </td>
                 </tr>
               ))}
@@ -78,7 +79,7 @@ export function PembelianDetail({ data, onClose }: PembelianDetailProps) {
                   Total
                 </td>
                 <td className="px-4 py-2 text-right font-bold text-zinc-900">
-                  Rp {header.total.toLocaleString("id-ID")}
+                  {formatRupiah(header.total)}
                 </td>
               </tr>
             </tfoot>

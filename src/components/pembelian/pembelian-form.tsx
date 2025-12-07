@@ -8,6 +8,7 @@ import { BarangResponse } from "@/types/barangType";
 import { Modal } from "@/components/ui/modal";
 import { BarangSelector } from "./barang-selector";
 import { Plus, Trash2, Loader2 } from "lucide-react";
+import { formatRupiah } from "@/lib/format";
 
 interface PembelianFormProps {
   onSuccess: () => void;
@@ -25,6 +26,7 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
   const [supplier, setSupplier] = useState("");
   const [items, setItems] = useState<CartItem[]>([]);
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const createMutation = useMutation({
@@ -38,6 +40,7 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
     },
     onError: (err: any) => {
       setError(err.message || "Gagal membuat transaksi pembelian");
+      setIsConfirmOpen(false); // Close confirm on error to show error message
     },
   });
 
@@ -89,6 +92,10 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
       return;
     }
 
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirm = () => {
     const payload: BeliHeaderRequest = {
       supplier,
       details: items.map((item) => ({
@@ -102,6 +109,94 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
   };
 
   const total = items.reduce((sum, item) => sum + item.qty * item.harga, 0);
+
+  if (isConfirmOpen) {
+    return (
+      <div className="space-y-6">
+        <h3 className="text-lg font-medium text-zinc-900">
+          Konfirmasi Pembelian
+        </h3>
+
+        {/* Summary details */}
+        <div className="rounded-md bg-zinc-50 p-4 text-sm border border-zinc-200">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <div className="text-zinc-500">Supplier</div>
+              <div className="font-medium text-zinc-900">{supplier}</div>
+            </div>
+            <div>
+              <div className="text-zinc-500">Total Item</div>
+              <div className="font-medium text-zinc-900">{items.length}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Items Table Preview */}
+        <div className="overflow-hidden rounded-lg border border-zinc-200">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-zinc-50 text-zinc-500">
+              <tr>
+                <th className="px-4 py-2 font-medium">Barang</th>
+                <th className="px-4 py-2 font-medium text-right">Qty</th>
+                <th className="px-4 py-2 font-medium text-right">Harga</th>
+                <th className="px-4 py-2 font-medium text-right">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-100">
+              {items.map((item) => (
+                <tr key={item.barang.id}>
+                  <td className="px-4 py-2">
+                    <div className="font-medium text-zinc-900">
+                      {item.barang.nama_barang}
+                    </div>
+                  </td>
+                  <td className="px-4 py-2 text-right text-zinc-900">
+                    {item.qty} {item.barang.satuan}
+                  </td>
+                  <td className="px-4 py-2 text-right text-zinc-600">
+                    {formatRupiah(item.harga)}
+                  </td>
+                  <td className="px-4 py-2 text-right font-medium text-zinc-900">
+                    {formatRupiah(item.qty * item.harga)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot className="bg-zinc-50">
+              <tr>
+                <td colSpan={3} className="px-4 py-2 text-right font-bold">
+                  Total
+                </td>
+                <td className="px-4 py-2 text-right font-bold text-zinc-900">
+                  {formatRupiah(total)}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={() => setIsConfirmOpen(false)}
+            className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+            disabled={createMutation.isPending}
+          >
+            Kembali
+          </button>
+          <button
+            onClick={handleConfirm}
+            disabled={createMutation.isPending}
+            className="flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+          >
+            {createMutation.isPending && (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            )}
+            Konfirmasi & Simpan
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -206,7 +301,7 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
                           Subtotal
                         </label>
                         <div className="text-sm font-medium text-zinc-900">
-                          Rp {(item.qty * item.harga).toLocaleString("id-ID")}
+                          {formatRupiah(item.qty * item.harga)}
                         </div>
                       </div>
                       <button
@@ -228,7 +323,7 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
             <div className="text-right">
               <span className="text-sm text-zinc-500">Total Pembelian</span>
               <div className="text-xl font-bold text-zinc-900">
-                Rp {total.toLocaleString("id-ID")}
+                {formatRupiah(total)}
               </div>
             </div>
           </div>
