@@ -9,6 +9,7 @@ import { PembelianForm } from "@/components/pembelian/pembelian-form";
 import { PembelianDetail } from "@/components/pembelian/pembelian-detail";
 import { Plus, Search, Eye, Loader2 } from "lucide-react";
 import { useDebounce } from "@uidotdev/usehooks";
+import { formatDateTime, formatRupiah } from "@/lib/format";
 
 export default function PembelianPage() {
   const [search, setSearch] = useState("");
@@ -104,13 +105,13 @@ export default function PembelianPage() {
                       {item.header.no_faktur}
                     </td>
                     <td className="px-6 py-3 text-zinc-600">
-                      {new Date(item.header.created_at).toLocaleString("id-ID")}
+                      {formatDateTime(item.header.created_at)}
                     </td>
                     <td className="px-6 py-3 text-zinc-900">
                       {item.header.supplier}
                     </td>
                     <td className="px-6 py-3 font-medium text-zinc-900">
-                      Rp {item.header.total.toLocaleString("id-ID")}
+                      {formatRupiah(item.header.total)}
                     </td>
                     <td className="px-6 py-3">
                       <span

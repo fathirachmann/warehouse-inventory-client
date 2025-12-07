@@ -1,12 +1,12 @@
-import { PembelianResponse } from "@/types/transaksiType";
+import { PenjualanResponse } from "@/types/transaksiType";
 import { formatDateTime, formatRupiah } from "@/lib/format";
 
-interface PembelianDetailProps {
-  data: PembelianResponse;
+interface PenjualanDetailProps {
+  data: PenjualanResponse;
   onClose: () => void;
 }
 
-export function PembelianDetail({ data, onClose }: PembelianDetailProps) {
+export function PenjualanDetail({ data, onClose }: PenjualanDetailProps) {
   const { header, details } = data;
 
   return (
@@ -24,13 +24,27 @@ export function PembelianDetail({ data, onClose }: PembelianDetailProps) {
           </div>
         </div>
         <div>
-          <div className="text-zinc-500">Supplier</div>
-          <div className="font-medium text-zinc-900">{header.supplier}</div>
+          <div className="text-zinc-500">Customer</div>
+          <div className="font-medium text-zinc-900">{header.customer}</div>
         </div>
         <div>
           <div className="text-zinc-500">Dibuat Oleh</div>
           <div className="font-medium text-zinc-900">
             {header.user?.full_name || header.user?.username || "-"}
+          </div>
+        </div>
+        <div>
+          <div className="text-zinc-500">Status</div>
+          <div className="font-medium">
+            <span
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                header.status === "selesai"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-yellow-100 text-yellow-800"
+              }`}
+            >
+              {header.status}
+            </span>
           </div>
         </div>
       </div>

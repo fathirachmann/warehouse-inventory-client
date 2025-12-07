@@ -9,6 +9,7 @@ import { BarangForm } from "@/components/barang/barang-form";
 import { Plus, Search, Pencil, Trash2, Loader2 } from "lucide-react";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useAuth } from "@/hooks/useAuth";
+import { formatRupiah } from "@/lib/format";
 
 export default function BarangPage() {
   const { isAdmin } = useAuth();
@@ -193,10 +194,10 @@ export default function BarangPage() {
                     </td>
                     <td className="px-6 py-3 text-zinc-600">{item.satuan}</td>
                     <td className="px-6 py-3 text-zinc-600">
-                      Rp {item.harga_beli.toLocaleString("id-ID")}
+                      {formatRupiah(item.harga_beli)}
                     </td>
                     <td className="px-6 py-3 text-zinc-600">
-                      Rp {item.harga_jual.toLocaleString("id-ID")}
+                      {formatRupiah(item.harga_jual)}
                     </td>
                     <td className="px-6 py-3">
                       <span

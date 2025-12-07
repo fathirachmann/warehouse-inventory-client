@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { stokService } from "@/services/stokService";
 import { Loader2, RefreshCw, History, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatDateTime } from "@/lib/format";
 
 export default function StokPage() {
   const [activeTab, setActiveTab] = useState<"current" | "history">("current");
@@ -34,16 +35,6 @@ export default function StokPage() {
     } else {
       refetchHistory();
     }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString("id-ID", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
   };
 
   return (
@@ -149,7 +140,7 @@ export default function StokPage() {
                         </span>
                       </td>
                       <td className="px-6 py-3 text-zinc-600">
-                        {formatDate(item.updated_at)}
+                        {formatDateTime(item.updated_at)}
                       </td>
                     </tr>
                   ))
@@ -192,7 +183,7 @@ export default function StokPage() {
                   historyData?.data?.map((item) => (
                     <tr key={item.id} className="hover:bg-zinc-50">
                       <td className="px-6 py-3 text-zinc-600 whitespace-nowrap">
-                        {formatDate(item.created_at)}
+                        {formatDateTime(item.created_at)}
                       </td>
                       <td className="px-6 py-3 text-zinc-900">
                         {item.barang.nama_barang}

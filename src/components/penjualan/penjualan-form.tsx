@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { transactionService } from "@/services/transactionService";
-import { BeliHeaderRequest } from "@/types/transaksiType";
+import { JualHeaderRequest } from "@/types/transaksiType";
 import { BarangResponse } from "@/types/barangType";
 import { Modal } from "@/components/ui/modal";
 import { BarangSelector } from "./barang-selector";
 import { Plus, Trash2, Loader2 } from "lucide-react";
 import { formatRupiah } from "@/lib/format";
 
-interface PembelianFormProps {
+interface PenjualanFormProps {
   onSuccess: () => void;
   onCancel: () => void;
 }
@@ -18,29 +18,29 @@ interface PembelianFormProps {
 interface CartItem {
   barang: BarangResponse;
   qty: number;
-  harga: number; // Harga beli (editable)
+  harga: number; // Harga jual (editable)
 }
 
-export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
+export function PenjualanForm({ onSuccess, onCancel }: PenjualanFormProps) {
   const queryClient = useQueryClient();
-  const [supplier, setSupplier] = useState("");
+  const [customer, setCustomer] = useState("");
   const [items, setItems] = useState<CartItem[]>([]);
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const createMutation = useMutation({
-    mutationFn: (data: BeliHeaderRequest) =>
-      transactionService.createPembelian(data),
+    mutationFn: (data: JualHeaderRequest) =>
+      transactionService.createPenjualan(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pembelian"] });
-      queryClient.invalidateQueries({ queryKey: ["stok"] }); // Stok changes
-      queryClient.invalidateQueries({ queryKey: ["barang"] }); // Barang prices might change? No, but good to refresh
+      queryClient.invalidateQueries({ queryKey: ["penjualan"] });
+      queryClient.invalidateQueries({ queryKey: ["stok"] });
+      queryClient.invalidateQueries({ queryKey: ["barang"] });
       onSuccess();
     },
     onError: (err: any) => {
-      setError(err.message || "Gagal membuat transaksi pembelian");
-      setIsConfirmOpen(false); // Close confirm on error to show error message
+      setError(err.message || "Gagal membuat transaksi penjualan");
+      setIsConfirmOpen(false);
     },
   });
 
@@ -57,7 +57,7 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
       {
         barang,
         qty: 1,
-        harga: barang.harga_beli, // Default to current buy price
+        harga: barang.harga_jual, // Default to current sell price
       },
     ]);
     setIsSelectorOpen(false);
@@ -83,8 +83,8 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
     e.preventDefault();
     setError(null);
 
-    if (!supplier.trim()) {
-      setError("Nama supplier wajib diisi");
+    if (!customer.trim()) {
+      setError("Nama customer wajib diisi");
       return;
     }
     if (items.length === 0) {
@@ -96,8 +96,8 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
   };
 
   const handleConfirm = () => {
-    const payload: BeliHeaderRequest = {
-      supplier,
+    const payload: JualHeaderRequest = {
+      customer,
       details: items.map((item) => ({
         barang_id: item.barang.id,
         qty: item.qty,
@@ -114,15 +114,15 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
     return (
       <div className="space-y-6">
         <h3 className="text-lg font-medium text-zinc-900">
-          Konfirmasi Pembelian
+          Konfirmasi Penjualan
         </h3>
 
         {/* Summary details */}
         <div className="rounded-md bg-zinc-50 p-4 text-sm border border-zinc-200">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <div className="text-zinc-500">Supplier</div>
-              <div className="font-medium text-zinc-900">{supplier}</div>
+              <div className="text-zinc-500">Customer</div>
+              <div className="font-medium text-zinc-900">{customer}</div>
             </div>
             <div>
               <div className="text-zinc-500">Total Item</div>
@@ -210,14 +210,14 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
         {/* Header Info */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-zinc-700">
-            Nama Supplier
+            Nama Customer
           </label>
           <input
             type="text"
-            value={supplier}
-            onChange={(e) => setSupplier(e.target.value)}
+            value={customer}
+            onChange={(e) => setCustomer(e.target.value)}
             className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
-            placeholder="PT. Supplier Jaya"
+            placeholder="Nama Pelanggan"
             required
           />
         </div>
@@ -257,6 +257,9 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
                       <div className="text-xs text-zinc-500">
                         {item.barang.kode_barang}
                       </div>
+                      <div className="text-xs text-zinc-400 mt-1">
+                        Stok Tersedia: {item.barang.stok}
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -267,6 +270,7 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
                         <input
                           type="number"
                           min="1"
+                          max={item.barang.stok} // Limit by stock
                           value={item.qty}
                           onChange={(e) =>
                             handleUpdateItem(
@@ -280,7 +284,7 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
                       </div>
                       <div className="w-32">
                         <label className="mb-1 block text-[10px] text-zinc-500">
-                          Harga Beli (@)
+                          Harga Jual (@)
                         </label>
                         <input
                           type="number"
@@ -318,19 +322,13 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
             )}
           </div>
 
-          {/* Total */}
-          <div className="flex justify-end border-t border-zinc-200 pt-4">
-            <div className="text-right">
-              <span className="text-sm text-zinc-500">Total Pembelian</span>
-              <div className="text-xl font-bold text-zinc-900">
-                {formatRupiah(total)}
-              </div>
-            </div>
+          <div className="flex justify-end gap-4 text-sm">
+            <div className="font-medium text-zinc-500">Total Transaksi:</div>
+            <div className="font-bold text-zinc-900">{formatRupiah(total)}</div>
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex justify-end gap-3 border-t border-zinc-200 pt-4">
+        <div className="flex justify-end gap-3">
           <button
             type="button"
             onClick={onCancel}
@@ -341,8 +339,8 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
           </button>
           <button
             type="submit"
-            disabled={createMutation.isPending || items.length === 0}
             className="flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+            disabled={createMutation.isPending}
           >
             {createMutation.isPending && (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -352,7 +350,6 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
         </div>
       </form>
 
-      {/* Nested Modal for Selector */}
       <Modal
         isOpen={isSelectorOpen}
         onClose={() => setIsSelectorOpen(false)}
