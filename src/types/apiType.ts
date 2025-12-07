@@ -14,6 +14,7 @@ export interface ApiResponse<T> {
 
 // Error response structure
 export interface ErrorResponse {
-  status?: string;
+  status?: number;
+  // Backend: { error: string; message: string | Record<string, string> }
   message: string | Record<string, string>;
 }
