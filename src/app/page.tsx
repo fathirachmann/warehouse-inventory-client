@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { authService } from "@/services/authService";
 import { LoginRequest } from "@/types/authType";
+import { ErrorResponse } from "@/types/apiType";
 
 const loginSchema = z.object({
   email: z
@@ -46,7 +47,7 @@ export default function HomePage() {
       document.cookie = `token=${response.token}; path=/; max-age=86400; SameSite=Lax`;
       router.push("/dashboard");
     },
-    onError: (error: any) => {
+    onError: (error: ErrorResponse) => {
       if (error && typeof error.message === "object") {
         setFieldErrors(error.message as Record<string, string>);
         setErrorMessage(null);
@@ -66,8 +67,21 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-sm">
+    <div className="relative flex min-h-screen items-center justify-center px-4 overflow-hidden">
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: "url('/login-background.jpeg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        {/* White Veil & Blur */}
+        <div className="absolute inset-0 bg-white/40 backdrop-blur-[3px]" />
+      </div>
+
+      <div className="relative z-10 w-full max-w-md rounded-xl bg-white/95 p-8 shadow-2xl backdrop-blur-sm border border-white/50">
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
             Warehouse Inventory System
@@ -92,7 +106,7 @@ export default function HomePage() {
                   ? "border-red-500 focus:border-red-500 focus:ring-red-500"
                   : "border-zinc-300 focus:border-zinc-900 focus:ring-zinc-900"
               }`}
-              placeholder="admin@warehouse.com"
+              placeholder="Masukkan email"
               {...register("email")}
             />
             {errors.email && (
@@ -139,14 +153,14 @@ export default function HomePage() {
           <button
             type="submit"
             disabled={isPending}
-            className="flex w-full items-center justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
+            className="flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isPending ? "Memproses..." : "Masuk"}
           </button>
         </form>
 
         <p className="mt-6 text-center text-xs text-zinc-500">
-          Gunakan akun admin atau staff yang sudah terdaftar.
+          Ask the administrator for account access.
         </p>
       </div>
     </div>

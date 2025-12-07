@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { transactionService } from "@/services/transactionService";
 import { BeliHeaderRequest } from "@/types/transaksiType";
+import { ErrorResponse } from "@/types/apiType";
 import { BarangResponse } from "@/types/barangType";
 import { Modal } from "@/components/ui/modal";
 import { BarangSelector } from "./barang-selector";
@@ -38,8 +39,8 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
       queryClient.invalidateQueries({ queryKey: ["barang"] }); // Barang prices might change? No, but good to refresh
       onSuccess();
     },
-    onError: (err: any) => {
-      setError(err.message || "Gagal membuat transaksi pembelian");
+    onError: (err: ErrorResponse) => {
+      setError((err.message as string) || "Gagal membuat transaksi pembelian");
       setIsConfirmOpen(false); // Close confirm on error to show error message
     },
   });
@@ -186,7 +187,7 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
           <button
             onClick={handleConfirm}
             disabled={createMutation.isPending}
-            className="flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             {createMutation.isPending && (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -342,7 +343,7 @@ export function PembelianForm({ onSuccess, onCancel }: PembelianFormProps) {
           <button
             type="submit"
             disabled={createMutation.isPending || items.length === 0}
-            className="flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             {createMutation.isPending && (
               <Loader2 className="h-4 w-4 animate-spin" />

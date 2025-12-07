@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { barangService } from "@/services/barangService";
 import { BarangResponse, BarangRequest } from "@/types/barangType";
+import { ErrorResponse } from "@/types/apiType";
 import { Modal } from "@/components/ui/modal";
 import { BarangForm } from "@/components/barang/barang-form";
 import { Plus, Search, Pencil, Trash2, Loader2 } from "lucide-react";
@@ -60,8 +61,8 @@ export default function BarangPage() {
       setIsDeleteModalOpen(false);
       setBarangToDelete(null);
     },
-    onError: (error: any) => {
-      alert(error.message || "Gagal menghapus barang");
+    onError: (error: ErrorResponse) => {
+      alert((error.message as string) || "Gagal menghapus barang");
     },
   });
 
@@ -107,7 +108,7 @@ export default function BarangPage() {
         {isAdmin && (
           <button
             onClick={handleCreate}
-            className="flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+            className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
             <Plus className="h-4 w-4" />
             Tambah Barang

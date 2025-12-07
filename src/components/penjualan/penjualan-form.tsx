@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { transactionService } from "@/services/transactionService";
 import { JualHeaderRequest } from "@/types/transaksiType";
+import { ErrorResponse } from "@/types/apiType";
 import { BarangResponse } from "@/types/barangType";
 import { Modal } from "@/components/ui/modal";
 import { BarangSelector } from "./barang-selector";
@@ -38,8 +39,8 @@ export function PenjualanForm({ onSuccess, onCancel }: PenjualanFormProps) {
       queryClient.invalidateQueries({ queryKey: ["barang"] });
       onSuccess();
     },
-    onError: (err: any) => {
-      setError(err.message || "Gagal membuat transaksi penjualan");
+    onError: (err: ErrorResponse) => {
+      setError((err.message as string) || "Gagal membuat transaksi penjualan");
       setIsConfirmOpen(false);
     },
   });
@@ -186,7 +187,7 @@ export function PenjualanForm({ onSuccess, onCancel }: PenjualanFormProps) {
           <button
             onClick={handleConfirm}
             disabled={createMutation.isPending}
-            className="flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             {createMutation.isPending && (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -339,7 +340,7 @@ export function PenjualanForm({ onSuccess, onCancel }: PenjualanFormProps) {
           </button>
           <button
             type="submit"
-            className="flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             disabled={createMutation.isPending}
           >
             {createMutation.isPending && (
