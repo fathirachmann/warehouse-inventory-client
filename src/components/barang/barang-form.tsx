@@ -70,7 +70,7 @@ export function BarangForm({
         <input
           {...register("nama_barang")}
           className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
-          placeholder="Contoh: Paracetamol 500mg"
+          placeholder="Contoh: Laptop ASUS Vivobook"
         />
         {errors.nama_barang && (
           <p className="text-xs text-red-600">{errors.nama_barang.message}</p>
@@ -93,7 +93,7 @@ export function BarangForm({
           <input
             {...register("satuan")}
             className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
-            placeholder="Pcs, Box, Strip"
+            placeholder="pcs, unit, kg, dll."
           />
           {errors.satuan && (
             <p className="text-xs text-red-600">{errors.satuan.message}</p>
