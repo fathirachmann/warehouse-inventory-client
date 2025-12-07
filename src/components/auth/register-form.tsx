@@ -4,6 +4,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterRequest } from "@/types/authType";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 const registerSchema = z.object({
   username: z.string().min(4, "Username minimal 4 karakter"),
@@ -42,66 +46,71 @@ export function RegisterForm({ onSubmit, isSubmitting }: RegisterFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-1">
-        <label className="text-sm font-medium text-zinc-700">Username</label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="username">Username</Label>
+        <Input
+          id="username"
           {...register("username")}
-          className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
           placeholder="johndoe"
+          className={errors.username ? "border-destructive" : ""}
         />
         {errors.username && (
-          <p className="text-xs text-red-600">{errors.username.message}</p>
+          <p className="text-xs text-destructive">{errors.username.message}</p>
         )}
       </div>
 
-      <div className="space-y-1">
-        <label className="text-sm font-medium text-zinc-700">Email</label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
           type="email"
           {...register("email")}
-          className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
           placeholder="john@example.com"
+          className={errors.email ? "border-destructive" : ""}
         />
         {errors.email && (
-          <p className="text-xs text-red-600">{errors.email.message}</p>
+          <p className="text-xs text-destructive">{errors.email.message}</p>
         )}
       </div>
 
-      <div className="space-y-1">
-        <label className="text-sm font-medium text-zinc-700">
-          Nama Lengkap
-        </label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="full_name">Nama Lengkap</Label>
+        <Input
+          id="full_name"
           {...register("full_name")}
-          className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
           placeholder="John Doe"
+          className={errors.full_name ? "border-destructive" : ""}
         />
         {errors.full_name && (
-          <p className="text-xs text-red-600">{errors.full_name.message}</p>
+          <p className="text-xs text-destructive">{errors.full_name.message}</p>
         )}
       </div>
 
-      <div className="space-y-1">
-        <label className="text-sm font-medium text-zinc-700">Password</label>
-        <input
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
           type="password"
           {...register("password")}
-          className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-900"
           placeholder="********"
+          className={errors.password ? "border-destructive" : ""}
         />
         {errors.password && (
-          <p className="text-xs text-red-600">{errors.password.message}</p>
+          <p className="text-xs text-destructive">{errors.password.message}</p>
         )}
       </div>
 
       <div className="pt-4">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:bg-zinc-400"
-        >
-          {isSubmitting ? "Mendaftarkan..." : "Daftarkan Staff"}
-        </button>
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Mendaftarkan...
+            </>
+          ) : (
+            "Daftarkan Staff"
+          )}
+        </Button>
       </div>
     </form>
   );
