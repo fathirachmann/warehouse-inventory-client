@@ -76,7 +76,7 @@ export function BarangSelector({ onSelect, onClose }: BarangSelectorProps) {
                         onSelect(item);
                         onClose();
                       }}
-                      className="rounded-md bg-zinc-900 px-2 py-1 text-xs font-medium text-white hover:bg-zinc-800"
+                      className="rounded-md bg-primary px-2 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
                     >
                       Pilih
                     </button>

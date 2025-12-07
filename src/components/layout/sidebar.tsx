@@ -47,8 +47,8 @@ export function Sidebar() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Package className="h-5 w-5" />
           </div>
-          <span className="text-lg font-bold text-sidebar-foreground">
-            Warehouse
+          <span className="text-md font-bold text-sidebar-foreground">
+            Warehouse Inventory
           </span>
         </div>
       </div>

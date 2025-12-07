@@ -140,7 +140,7 @@ export default function HomePage() {
           <button
             type="submit"
             disabled={isPending}
-            className="flex w-full items-center justify-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
+            className="flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isPending ? "Memproses..." : "Masuk"}
           </button>
