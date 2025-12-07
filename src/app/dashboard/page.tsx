@@ -4,29 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { barangService } from "@/services/barangService";
 import { stokService } from "@/services/stokService";
 import { transactionService } from "@/services/transactionService";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Package,
-  ShoppingCart,
-  TrendingDown,
-  TrendingUp,
-  ArrowUpRight,
-  ArrowDownLeft,
-  Loader2,
-} from "lucide-react";
-import { formatRupiah, formatDateTime } from "@/lib/format";
-import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 import { useMemo } from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { SummaryCards } from "@/components/dashboard/summary-cards";
+import { RecentActivity } from "@/components/dashboard/recent-activity";
+import { TransactionChart } from "@/components/dashboard/transaction-chart";
 
 export default function DashboardPage() {
   // 1. Fetch Barang (for Total Barang)
@@ -110,7 +92,7 @@ export default function DashboardPage() {
     for (let i = days - 1; i >= 0; i--) {
       const date = new Date(now);
       date.setDate(date.getDate() - i);
-      const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
+      const dateStr = date.toISOString().split("T")[0];
       const displayDate = date.toLocaleDateString("id-ID", {
         day: "numeric",
         month: "short",
@@ -181,176 +163,11 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Barang</CardTitle>
-            <Package className="h-4 w-4 text-zinc-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{summary.totalBarang}</div>
-            <p className="text-xs text-zinc-500">Jenis barang terdaftar</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Stok</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-zinc-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{summary.totalStok}</div>
-            <p className="text-xs text-zinc-500">Unit barang di gudang</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pembelian</CardTitle>
-            <TrendingDown className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatRupiah(summary.totalPembelian)}
-            </div>
-            <p className="text-xs text-zinc-500">Total pembelian bulan ini</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Penjualan</CardTitle>
-            <TrendingUp className="h-4 w-4 text-blue-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatRupiah(summary.totalPenjualan)}
-            </div>
-            <p className="text-xs text-zinc-500">Total penjualan bulan ini</p>
-          </CardContent>
-        </Card>
-      </div>
+      <SummaryCards summary={summary} />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-        {/* Recent Activity */}
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Aktivitas Terbaru</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-8">
-              {recentActivity.length === 0 ? (
-                <div className="text-center text-sm text-zinc-500">
-                  Tidak ada aktivitas
-                </div>
-              ) : (
-                recentActivity.map((item) => (
-                  <div
-                    key={`${item.type}-${item.id}`}
-                    className="flex items-center"
-                  >
-                    <div
-                      className={cn(
-                        "flex h-9 w-9 items-center justify-center rounded-full border",
-                        item.type === "pembelian"
-                          ? "border-green-200 bg-green-50"
-                          : "border-blue-200 bg-blue-50"
-                      )}
-                    >
-                      {item.type === "pembelian" ? (
-                        <ArrowDownLeft className="h-4 w-4 text-green-600" />
-                      ) : (
-                        <ArrowUpRight className="h-4 w-4 text-blue-600" />
-                      )}
-                    </div>
-                    <div className="ml-4 space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {item.party_name}
-                      </p>
-                      <p className="text-xs text-zinc-500">
-                        {item.no_faktur} • {formatDateTime(item.date)}
-                      </p>
-                    </div>
-                    <div className="ml-auto font-medium">
-                      {item.type === "pembelian" ? "-" : "+"}
-                      {formatRupiah(item.total)}
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Transaction Chart */}
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle>Grafik Transaksi (7 Hari)</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={chartData}
-                  margin={{
-                    top: 5,
-                    right: 10,
-                    left: 10,
-                    bottom: 0,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    tickLine={false}
-                    axisLine={false}
-                    tick={{ fontSize: 12, fill: "#71717a" }}
-                  />
-                  <YAxis
-                    tickLine={false}
-                    axisLine={false}
-                    tick={{ fontSize: 12, fill: "#71717a" }}
-                    tickFormatter={(value) =>
-                      new Intl.NumberFormat("id-ID", {
-                        notation: "compact",
-                        compactDisplay: "short",
-                      }).format(value)
-                    }
-                  />
-                  <Tooltip
-                    cursor={{ fill: "#f4f4f5" }}
-                    contentStyle={{
-                      borderRadius: "8px",
-                      border: "1px solid #e4e4e7",
-                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                    }}
-                    formatter={(value: number) => [formatRupiah(value), ""]}
-                  />
-                  <Legend
-                    wrapperStyle={{ paddingTop: "20px" }}
-                    formatter={(value) => (
-                      <span className="text-sm text-zinc-600 capitalize">
-                        {value}
-                      </span>
-                    )}
-                  />
-                  <Bar
-                    dataKey="pembelian"
-                    name="Pembelian"
-                    fill="#22c55e"
-                    radius={[4, 4, 0, 0]}
-                    maxBarSize={40}
-                  />
-                  <Bar
-                    dataKey="penjualan"
-                    name="Penjualan"
-                    fill="#3b82f6"
-                    radius={[4, 4, 0, 0]}
-                    maxBarSize={40}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        <RecentActivity activities={recentActivity} />
+        <TransactionChart data={chartData} />
       </div>
     </div>
   );
