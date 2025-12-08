@@ -2,7 +2,7 @@
 
 ## Description
 
-This is the frontend application for the **Warehouse Inventory System** of **PT Kreanova Pharmaret**. It is a modern web application built with **Next.js 15**, **TypeScript**, and **Tailwind CSS**, designed to provide an intuitive interface for managing warehouse operations.
+This is the frontend application for the **Warehouse Inventory System**. It is a modern web application built with **Next.js 15**, **TypeScript**, and **Tailwind CSS**, designed to provide an intuitive interface for managing warehouse operations.
 
 The application connects to the [Warehouse Inventory Server](https://github.com/fathirachmann/warehouse-inventory-server) to perform inventory management tasks.
 
